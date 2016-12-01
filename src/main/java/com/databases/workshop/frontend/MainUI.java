@@ -26,13 +26,12 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 @SpringUI
 public class MainUI extends UI {
 
-//  private ClientRepository clientDAO;
   private ClientDAO clientDAO;
   private ClientForm clientForm;
   private EventBus.UIEventBus eventBus;
 
   private MTable<Client> list = new MTable<>(Client.class)
-    .withProperties("ClientID", "FirstName", "LastName")
+    .withProperties("id", "firstName", "lastName")
     .withColumnHeaders("ID", "First Name", "Last Name")
     .setSortableProperties("FirstName", "LastName")
     .withFullWidth();
@@ -43,7 +42,7 @@ public class MainUI extends UI {
   private Button edit = new MButton(FontAwesome.PENCIL_SQUARE_O, this::edit);
   private Button delete = new MButton(FontAwesome.TRASH_O, "Are you sure?", this::remove);
 
-  public MainUI(ClientDAO /*ClientRepository*/ clientDAO, ClientForm clientForm, EventBus.UIEventBus eventBus) {
+  public MainUI(ClientDAO clientDAO, ClientForm clientForm, EventBus.UIEventBus eventBus) {
     this.clientDAO = clientDAO;
     this.clientForm = clientForm;
     this.eventBus = eventBus;
@@ -51,10 +50,10 @@ public class MainUI extends UI {
 
   @Override
   protected void init(VaadinRequest vaadinRequest) {
-//    DisclosurePanel aboutBox = new DisclosurePanel("TEXT", new RichText().withMarkDownResource("welcome.md"));
+    DisclosurePanel aboutBox = new DisclosurePanel("TEXT", new RichText().withMarkDownResource("/welcome.md"));
     setContent(
       new MVerticalLayout(
-//        aboutBox,
+        aboutBox,
         new MHorizontalLayout(filterByName, addNew, edit, delete),
         list
       ).expand(list)
@@ -86,7 +85,6 @@ public class MainUI extends UI {
 //    list.setRows(clientDAO.findAllClients());
 
     adjustActionButtonState();
-
   }
 
   public void add(Button.ClickEvent clickEvent) {
@@ -103,8 +101,8 @@ public class MainUI extends UI {
     listEntities();
   }
 
-  protected void edit(final Client phoneBookEntry) {
-    clientForm.setEntity(phoneBookEntry);
+  protected void edit(final Client client) {
+    clientForm.setEntity(client);
     clientForm.openInModalPopup();
   }
 

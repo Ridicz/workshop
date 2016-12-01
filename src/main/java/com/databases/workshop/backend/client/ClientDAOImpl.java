@@ -96,11 +96,33 @@ public class ClientDAOImpl implements ClientDAO {
   @Override
   public void updateClient(Client newClient, Integer id) {
     String query = "UPDATE";
+    System.out.println("donee");
   }
 
   @Override
   public void deleteClient(Integer id) {
+    String query = "DELETE FROM CLIENTS WHERE ClientID = ?";
 
+    Connection connection = null;
+
+    try {
+      connection = dataSource.getConnection();
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setInt(1, id);
+      statement.executeUpdate();
+      statement.close();
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   @Override

@@ -18,10 +18,6 @@ public class Client extends Person {
     super(id, firstName, lastName);
   }
 
-  public Integer getClientID() {
-    return id;
-  }
-
   @Override
   public String toString() {
     return "Client{" +
