@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface ClientDAO {
   List<Client> findAllClients();
-  void createClient(String firstName, String lastName);
-  void updateClient(Client newClient, Integer id);
+  void createClient(Client client);
+  void updateClient(Client newClient);
   void deleteClient(Integer id);
   Client findClientByID(Integer id);
   Client findClientByFirstName(String firstName);

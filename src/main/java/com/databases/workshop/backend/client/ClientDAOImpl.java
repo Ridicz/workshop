@@ -68,7 +68,12 @@ public class ClientDAOImpl implements ClientDAO {
   }
 
   @Override
-  public void createClient(String firstName, String lastName) {
+  public void createClient(Client client) {
+    if (findClientByID(client.getId()) != null) {
+      updateClient(client);
+      return;
+    }
+
     String query = "INSERT INTO CLIENTS (FirstName, LastName) VALUES (?, ?)";
 
     Connection connection = null;
@@ -76,8 +81,8 @@ public class ClientDAOImpl implements ClientDAO {
     try {
       connection = dataSource.getConnection();
       PreparedStatement statement = connection.prepareStatement(query);
-      statement.setString(1, firstName);
-      statement.setString(2, lastName);
+      statement.setString(1, client.getFirstName());
+      statement.setString(2, client.getLastName());
       statement.executeUpdate();
       statement.close();
     } catch (SQLException e) {
@@ -94,9 +99,30 @@ public class ClientDAOImpl implements ClientDAO {
   }
 
   @Override
-  public void updateClient(Client newClient, Integer id) {
-    String query = "UPDATE";
-    System.out.println("donee");
+  public void updateClient(Client newClient) {
+    String query = "UPDATE CLIENTS SET FirstName=?, LastName=? WHERE ClientID=?";
+
+    Connection connection = null;
+
+    try {
+      connection = dataSource.getConnection();
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setString(1, newClient.getFirstName());
+      statement.setString(2, newClient.getLastName());
+      statement.setInt(3, newClient.getId());
+      statement.executeUpdate();
+      statement.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   @Override
@@ -127,6 +153,10 @@ public class ClientDAOImpl implements ClientDAO {
 
   @Override
   public Client findClientByID(Integer id) {
+    if (id == null) {
+      return null;
+    }
+
     String query = "SELECT * FROM CLIENTS WHERE ClientID = ?";
 
     Connection connection = null;

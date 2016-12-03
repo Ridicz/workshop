@@ -44,7 +44,7 @@ public class ClientController {
 
   @RequestMapping(value = "/clients/", method = RequestMethod.POST)
   public ResponseEntity<Void> addClient(@RequestBody Client client, UriComponentsBuilder builder) {
-    clientDAO.createClient(client.getFirstName(), client.getLastName());
+    clientDAO.createClient(client);
 
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(builder.path("/units/{name}").buildAndExpand(client.getFirstName()).
@@ -73,7 +73,7 @@ public class ClientController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    clientDAO.updateClient(client, id);
+    clientDAO.updateClient(client);
 
     return new ResponseEntity<>(currentUnit, HttpStatus.OK);
   }

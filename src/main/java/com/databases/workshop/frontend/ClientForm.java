@@ -29,7 +29,7 @@ public class ClientForm extends AbstractForm<Client> {
     this.eventBus = eventBus;
 
     setSavedHandler(client -> {
-      clientDAO.createClient(client.getFirstName(), client.getLastName());
+      clientDAO.createClient(client);
       eventBus.publish(this, new ClientModifiedEvent(client));
     });
     setResetHandler(p -> eventBus.publish(this, new ClientModifiedEvent(p)));

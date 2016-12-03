@@ -31,4 +31,28 @@ public class Mechanic extends Person {
     this.age = age;
     this.specialization = specialization;
   }
+
+  public int getSalary() {
+    return salary;
+  }
+
+  public void setSalary(int salary) {
+    this.salary = salary;
+  }
+
+  public int getAge() {
+    return age;
+  }
+
+  public void setAge(int age) {
+    this.age = age;
+  }
+
+  public String getSpecialization() {
+    return specialization;
+  }
+
+  public void setSpecialization(String specialization) {
+    this.specialization = specialization;
+  }
 }
