@@ -1,11 +1,10 @@
-package com.databases.workshop.frontend;
+package com.databases.workshop.frontend.forms;
 
-import com.databases.workshop.backend.client.Client;
-import com.databases.workshop.backend.client.ClientDAO;
-import com.databases.workshop.backend.model.Person;
+import com.databases.workshop.backend.mechanic.Mechanic;
+import com.databases.workshop.backend.mechanic.MechanicDAO;
+import com.databases.workshop.frontend.events.ClientModifiedEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 import org.vaadin.spring.events.EventBus;
@@ -16,21 +15,18 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 
 @UIScope
 @SpringComponent
-public class ClientForm extends AbstractForm<Client> {
-
-  private EventBus.UIEventBus eventBus;
-  private ClientDAO clientDAO;
+public class MechanicForm extends EntityForm<Mechanic> {
 
   private TextField firstName = new MTextField("First Name");
   private TextField lastName = new MTextField("Last Name");
+  private TextField salary = new MTextField("Salary");
+  private TextField age = new MTextField("Age");
+  private TextField specialization = new MTextField("Specialization");
 
-  ClientForm(ClientDAO clientDAO, EventBus.UIEventBus eventBus) {
-    this.clientDAO = clientDAO;
-    this.eventBus = eventBus;
-
-    setSavedHandler(client -> {
-      clientDAO.createClient(client);
-      eventBus.publish(this, new ClientModifiedEvent(client));
+  public MechanicForm(MechanicDAO mechanicDAO, EventBus.UIEventBus eventBus) {
+    setSavedHandler(mechanic -> {
+      mechanicDAO.createMechanic(mechanic);
+      eventBus.publish(this, new ClientModifiedEvent(mechanic));
     });
     setResetHandler(p -> eventBus.publish(this, new ClientModifiedEvent(p)));
 
@@ -42,8 +38,11 @@ public class ClientForm extends AbstractForm<Client> {
     return new MVerticalLayout(
       new MFormLayout(
         firstName,
-        lastName
-    ).withWidth(""),
+        lastName,
+        salary,
+        age,
+        specialization
+      ).withWidth(""),
       getToolbar()
     ).withWidth("");
   }

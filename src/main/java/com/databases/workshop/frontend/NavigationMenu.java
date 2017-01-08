@@ -1,5 +1,8 @@
 package com.databases.workshop.frontend;
 
+import com.databases.workshop.frontend.events.ChangeTableEvent;
+import com.databases.workshop.frontend.events.SelectedClientTableEvent;
+import com.databases.workshop.frontend.events.SelectedMechanicTableEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.HorizontalLayout;
@@ -29,8 +32,8 @@ public class NavigationMenu extends HorizontalLayout {
     MButton machines = new MButton("Machines");
     MButton models = new MButton("Models");
 
-    clients.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new ChangeTableEvent(new ClientTable())));
-    mechanics.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new ChangeTableEvent(new MechanicTable())));
+    clients.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new SelectedClientTableEvent()));
+    mechanics.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new SelectedMechanicTableEvent()));
 
     addComponents(clients, mechanics, vehicles, repairs, parts, machines, models);
     setSpacing(true);

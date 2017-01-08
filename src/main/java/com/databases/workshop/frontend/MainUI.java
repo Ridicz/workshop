@@ -1,21 +1,30 @@
 package com.databases.workshop.frontend;
 
 import com.databases.workshop.backend.client.Client;
+import com.databases.workshop.backend.mechanic.Mechanic;
+import com.databases.workshop.backend.model.BaseEntity;
+import com.databases.workshop.frontend.events.ClientModifiedEvent;
+import com.databases.workshop.frontend.events.SelectedClientTableEvent;
+import com.databases.workshop.frontend.events.SelectedMechanicTableEvent;
+import com.databases.workshop.frontend.forms.EntityForm;
+import com.databases.workshop.frontend.tables.ClientTable;
+import com.databases.workshop.frontend.tables.EntityTable;
+import com.databases.workshop.frontend.tables.MechanicTable;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.EventScope;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import org.vaadin.viritin.button.ConfirmButton;
 import org.vaadin.viritin.button.MButton;
-import org.vaadin.viritin.components.DisclosurePanel;
 import org.vaadin.viritin.fields.MTextField;
-import org.vaadin.viritin.label.RichText;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 
@@ -24,13 +33,13 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 @SpringUI
 public class MainUI extends UI {
 
-  private ClientForm clientForm;
   private EventBus.UIEventBus eventBus;
 
+  private EntityForm entityForm;
   private EntityTable entityTable;
 
-  private ClientTable clientTable;
-  private MechanicTable mechanicTable;
+  private EntityTable<Client> clientTable;
+  private EntityTable<Mechanic> mechanicTable;
 
   private TextField filterByName = new MTextField().withInputPrompt("Filter by name");
 
@@ -40,44 +49,45 @@ public class MainUI extends UI {
     "Are you sure you want to delete entity?", this::remove);
 
   @Autowired
-  public MainUI(ClientForm clientForm, EventBus.UIEventBus eventBus, ClientTable clientTable, MechanicTable mechanicTable) {
-    this.clientForm = clientForm;
+  public MainUI(EventBus.UIEventBus eventBus) {
     this.eventBus = eventBus;
+  }
+
+  @Autowired
+  public void setEntityTable(ClientTable clientTable) {
     this.entityTable = clientTable;
+  }
+
+  @Autowired
+  public void setClientTable(ClientTable clientTable) {
     this.clientTable = clientTable;
+  }
+
+  @Autowired
+  public void setMechanicTable(MechanicTable mechanicTable) {
     this.mechanicTable = mechanicTable;
   }
 
   @Override
   protected void init(VaadinRequest vaadinRequest) {
-    DisclosurePanel aboutBox = new DisclosurePanel("TEXT", new RichText().withMarkDownResource("/welcome.md"));
-    setContent(
-      new MVerticalLayout(
-        new NavigationMenu(eventBus),
-        aboutBox,
-        new MHorizontalLayout(filterByName, addNew, edit, delete),
-        entityTable
-      ).expand(entityTable)
-    );
-    listEntities();
-
-    entityTable.addMValueChangeListener(e -> adjustActionButtonState());
-    filterByName.addTextChangeListener(e -> entityTable.listEntities(e.getText()));
-
+    update();
     eventBus.subscribe(this);
   }
 
   private void update() {
-    DisclosurePanel aboutBox = new DisclosurePanel("TEXT", new RichText().withMarkDownResource("/welcome.md"));
     setContent(
       new MVerticalLayout(
         new NavigationMenu(eventBus),
-        aboutBox,
         new MHorizontalLayout(filterByName, addNew, edit, delete),
         entityTable
       ).expand(entityTable)
     );
     listEntities();
+
+    entityTable.addMValueChangeListener(event -> adjustActionButtonState());
+    filterByName.addTextChangeListener(e -> entityTable.listEntities(e.getText()));
+
+    entityForm = entityTable.getForm();
   }
 
   protected void adjustActionButtonState() {
@@ -96,27 +106,28 @@ public class MainUI extends UI {
   }
 
   public void edit(Button.ClickEvent clickEvent) {
-    entityTable.edit();
+    entityTable.edit((BaseEntity) entityTable.getValue());
   }
 
   public void remove(Button.ClickEvent clickEvent) {
     entityTable.remove();
   }
 
-  protected void edit(final Client client) {
-    clientForm.setEntity(client);
-    clientForm.openInModalPopup();
-  }
-
   @EventBusListenerMethod(scope = EventScope.UI)
-  public void onPersonModified(ClientModifiedEvent event) {
+  public void onEntityModified(ClientModifiedEvent event) {
     listEntities();
-    clientForm.closePopup();
+    entityForm.closePopup();
   }
 
   @EventBusListenerMethod(scope = EventScope.UI)
-  public void mechanicTableSet(ChangeTableEvent event) {
-    entityTable = event.getEntityTable();
+  public void clientTableSet(SelectedClientTableEvent event) {
+    entityTable = clientTable;
+    update();
+  }
+
+  @EventBusListenerMethod(scope = EventScope.UI)
+  public void mechanicTableSet(SelectedMechanicTableEvent event) {
+    entityTable = mechanicTable;
     update();
   }
 }

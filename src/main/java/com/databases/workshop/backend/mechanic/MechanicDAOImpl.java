@@ -1,5 +1,6 @@
 package com.databases.workshop.backend.mechanic;
 
+import com.databases.workshop.backend.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -30,7 +31,14 @@ public class MechanicDAOImpl implements MechanicDAO {
 
   @Override
   public void createMechanic(Mechanic mechanic) {
+    if (findMechanicByID(mechanic.getId()) != null) {
+      updateMechanic(mechanic);
+      return;
+    }
 
+    String query = "INSERT INTO MECHANICS (FirstName, LastName, Salary, Age, Specialization) VALUES (?, ?, ?, ?, ?)";
+
+    template.update(query, mechanic.getFirstName(), mechanic.getLastName(), mechanic.getSalary(), mechanic.getAge(), mechanic.getSpecialization());
   }
 
   @Override
@@ -45,7 +53,15 @@ public class MechanicDAOImpl implements MechanicDAO {
 
   @Override
   public Mechanic findMechanicByID(Integer id) {
-    return null;
+    if (id == null) {
+      return null;
+    }
+
+    String query = "SELECT * FROM MECHANICS WHERE MechanicID = ?";
+
+    return template.queryForObject(query, new Object[]{id}, (rs, rowNum) ->
+      new Mechanic(id, rs.getString("FirstName"), rs.getString("LastName"),
+        rs.getInt("Salary"), rs.getInt("Age"), rs.getString("Specialization")));
   }
 
   @Override

@@ -1,4 +1,6 @@
-package com.databases.workshop.frontend;
+package com.databases.workshop.frontend.events;
+
+import com.databases.workshop.frontend.tables.EntityTable;
 
 public class ChangeTableEvent {
 

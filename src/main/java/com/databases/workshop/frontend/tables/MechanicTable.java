@@ -1,18 +1,27 @@
-package com.databases.workshop.frontend;
+package com.databases.workshop.frontend.tables;
 
 import com.databases.workshop.backend.mechanic.Mechanic;
 import com.databases.workshop.backend.mechanic.MechanicDAO;
+import com.databases.workshop.frontend.forms.MechanicForm;
+import com.databases.workshop.frontend.tables.EntityTable;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Table;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+@UIScope
+@SpringComponent
 public class MechanicTable extends EntityTable<Mechanic> {
 
-  private final MechanicDAO mechanicDAO;
+  private MechanicForm mechanicForm;
+
+  private MechanicDAO mechanicDAO;
 
   @Autowired
-  public MechanicTable(MechanicDAO mechanicDAO) {
+  public MechanicTable(MechanicDAO mechanicDAO, MechanicForm mechanicForm) {
+    this.mechanicDAO = mechanicDAO;
+    this.mechanicForm = mechanicForm;
+
     withProperties("id", "firstName", "lastName", "salary", "age", "specialization");
     withColumnHeaders("ID", "First Name", "Last Name", "Salary", "Age", "Specialization");
     setSortableProperties("FirstName", "LastName");
@@ -25,8 +34,6 @@ public class MechanicTable extends EntityTable<Mechanic> {
     setColumnWidth("age", 100);
     setColumnWidth("specialization", 200);
     setColumnAlignment("id", Table.Align.CENTER);
-
-    this.mechanicDAO = mechanicDAO;
   }
 
   @Override
@@ -37,17 +44,25 @@ public class MechanicTable extends EntityTable<Mechanic> {
   }
 
   @Override
-  public void add() {
-
+  public MechanicForm getForm() {
+    return mechanicForm;
   }
 
   @Override
-  public void edit() {
+  public void add() {
+    edit(new Mechanic());
+  }
 
+  @Override
+  public void edit(Mechanic mechanic) {
+    mechanicForm.setEntity(mechanic);
+    mechanicForm.openInModalPopup();
   }
 
   @Override
   public void remove() {
-
+    mechanicDAO.deleteMechanic(getValue().getId());
+    setValue(null);
+    listEntities("");
   }
 }
