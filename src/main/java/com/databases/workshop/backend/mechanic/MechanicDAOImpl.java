@@ -1,6 +1,5 @@
 package com.databases.workshop.backend.mechanic;
 
-import com.databases.workshop.backend.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -43,12 +42,17 @@ public class MechanicDAOImpl implements MechanicDAO {
 
   @Override
   public void updateMechanic(Mechanic newMechanic) {
+    String query = "UPDATE MECHANICS SET FirstName=?, LastName=?, Salary=?, Age=?, Specialization=? WHERE MechanicID=?";
 
+    template.update(query, newMechanic.getFirstName(), newMechanic.getLastName(), newMechanic.getSalary(),
+      newMechanic.getAge(), newMechanic.getSpecialization(), newMechanic.getId());
   }
 
   @Override
   public void deleteMechanic(Integer id) {
+    String query = "DELETE FROM MECHANICS WHERE MechanicID = ?";
 
+    template.update(query, id);
   }
 
   @Override
@@ -76,10 +80,9 @@ public class MechanicDAOImpl implements MechanicDAO {
 
   @Override
   public List<Mechanic> findMechanicsContains(String nameFilter) {
-//    String query = "SELECT * FROM MECHANICS WHERE FirstName LIKE ? OR LastName LIKE ?";
-    String query = "SELECT * FROM MECHANICS";
+    String query = "SELECT * FROM MECHANICS WHERE FirstName LIKE ? OR LastName LIKE ?";
 
-    return template.query(query, ((rs, rowNum) ->
+    return template.query(query, new Object[]{nameFilter, nameFilter}, ((rs, rowNum) ->
       new Mechanic(Integer.valueOf(rs.getString("MechanicID")), rs.getString("FirstName"),
         rs.getString("LastName"), rs.getInt("Salary"), rs.getInt("Age"), rs.getString("Specialization"))));
   }
