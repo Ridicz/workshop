@@ -78,10 +78,10 @@ public class VehicleDAOImpl implements VehicleDAO {
   public List<Vehicle> findVehiclesContains(String nameFilter) {
     String query = "SELECT * FROM VEHICLES WHERE Brand LIKE ?";
 
-    return template.query(query, new Object[]{nameFilter}, ((rs, rowNum) ->
+    return template.query(query, new Object[]{nameFilter}, (rs, rowNum) ->
       new Vehicle(rs.getInt("VehicleID"), rs.getInt("ClientID"),
         rs.getInt("ModelID"), rs.getString("Brand"),
-        getClientName(rs.getInt("ClientID")))));
+        getClientName(rs.getInt("ClientID"))));
   }
 
   private String getClientName(Integer clientID) {
