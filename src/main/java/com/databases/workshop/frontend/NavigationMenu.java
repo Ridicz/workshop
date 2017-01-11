@@ -1,8 +1,8 @@
 package com.databases.workshop.frontend;
 
-import com.databases.workshop.frontend.events.ChangeTableEvent;
 import com.databases.workshop.frontend.events.SelectedClientTableEvent;
 import com.databases.workshop.frontend.events.SelectedMechanicTableEvent;
+import com.databases.workshop.frontend.events.SelectedVehicleTableEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.HorizontalLayout;
@@ -34,6 +34,7 @@ public class NavigationMenu extends HorizontalLayout {
 
     clients.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new SelectedClientTableEvent()));
     mechanics.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new SelectedMechanicTableEvent()));
+    vehicles.addClickListener(event -> eventBus.publish(EventScope.APPLICATION, new SelectedVehicleTableEvent()));
 
     addComponents(clients, mechanics, vehicles, repairs, parts, machines, models);
     setSpacing(true);

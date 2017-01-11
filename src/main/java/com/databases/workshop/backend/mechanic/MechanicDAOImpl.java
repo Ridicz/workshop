@@ -84,6 +84,7 @@ public class MechanicDAOImpl implements MechanicDAO {
 
     return template.query(query, new Object[]{nameFilter, nameFilter}, ((rs, rowNum) ->
       new Mechanic(Integer.valueOf(rs.getString("MechanicID")), rs.getString("FirstName"),
-        rs.getString("LastName"), rs.getInt("Salary"), rs.getInt("Age"), rs.getString("Specialization"))));
+        rs.getString("LastName"), rs.getInt("Salary"), rs.getInt("Age"),
+        rs.getString("Specialization"))));
   }
 }

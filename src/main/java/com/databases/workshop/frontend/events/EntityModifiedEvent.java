@@ -4,11 +4,11 @@ import com.databases.workshop.backend.model.BaseEntity;
 
 import java.io.Serializable;
 
-public class ClientModifiedEvent implements Serializable {
+public class EntityModifiedEvent implements Serializable {
 
   private final BaseEntity entity;
 
-  public ClientModifiedEvent(BaseEntity entity) {
+  public EntityModifiedEvent(BaseEntity entity) {
     this.entity = entity;
   }
 

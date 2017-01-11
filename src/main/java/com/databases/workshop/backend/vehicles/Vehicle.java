@@ -12,16 +12,18 @@ public class Vehicle extends BaseEntity {
   private Integer clientID;
   private Integer modelID;
   private String brand;
+  private String clientName;
 
   public Vehicle() {
 
   }
 
-  public Vehicle(Integer id, Integer clientID, Integer modelID, String brand) {
+  public Vehicle(Integer id, Integer clientID, Integer modelID, String brand, String clientName) {
     super(id);
     this.clientID = clientID;
     this.modelID = modelID;
     this.brand = brand;
+    this.clientName = clientName;
   }
 
   public Integer getClientID() {
@@ -46,5 +48,13 @@ public class Vehicle extends BaseEntity {
 
   public void setBrand(String brand) {
     this.brand = brand;
+  }
+
+  public String getClientName() {
+    return clientName;
+  }
+
+  public void setClientName(String clientName) {
+    this.clientName = clientName;
   }
 }

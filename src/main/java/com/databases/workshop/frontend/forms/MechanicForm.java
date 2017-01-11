@@ -2,14 +2,13 @@ package com.databases.workshop.frontend.forms;
 
 import com.databases.workshop.backend.mechanic.Mechanic;
 import com.databases.workshop.backend.mechanic.MechanicDAO;
-import com.databases.workshop.frontend.events.ClientModifiedEvent;
+import com.databases.workshop.frontend.events.EntityModifiedEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextField;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.viritin.fields.MTextField;
-import org.vaadin.viritin.form.AbstractForm;
 import org.vaadin.viritin.layouts.MFormLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 
@@ -26,9 +25,9 @@ public class MechanicForm extends EntityForm<Mechanic> {
   public MechanicForm(MechanicDAO mechanicDAO, EventBus.UIEventBus eventBus) {
     setSavedHandler(mechanic -> {
       mechanicDAO.createMechanic(mechanic);
-      eventBus.publish(this, new ClientModifiedEvent(mechanic));
+      eventBus.publish(this, new EntityModifiedEvent(mechanic));
     });
-    setResetHandler(p -> eventBus.publish(this, new ClientModifiedEvent(p)));
+    setResetHandler(p -> eventBus.publish(this, new EntityModifiedEvent(p)));
 
     setSizeUndefined();
   }

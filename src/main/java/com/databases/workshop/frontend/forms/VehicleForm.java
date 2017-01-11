@@ -1,7 +1,7 @@
 package com.databases.workshop.frontend.forms;
 
-import com.databases.workshop.backend.client.Client;
-import com.databases.workshop.backend.client.ClientDAO;
+import com.databases.workshop.backend.vehicles.Vehicle;
+import com.databases.workshop.backend.vehicles.VehicleDAO;
 import com.databases.workshop.frontend.events.EntityModifiedEvent;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -14,15 +14,16 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 
 @UIScope
 @SpringComponent
-public class ClientForm extends EntityForm<Client> {
+public class VehicleForm extends EntityForm<Vehicle> {
 
-  private TextField firstName = new MTextField("First Name");
-  private TextField lastName = new MTextField("Last Name");
+  private TextField brand = new MTextField("Brand");
+  private TextField clientID = new MTextField("Client ID");
+  private TextField modelID = new MTextField("Model ID");
 
-  public ClientForm(ClientDAO clientDAO, EventBus.UIEventBus eventBus) {
-    setSavedHandler(client -> {
-      clientDAO.createClient(client);
-      eventBus.publish(this, new EntityModifiedEvent(client));
+  public VehicleForm(VehicleDAO vehicleDAO, EventBus.UIEventBus eventBus) {
+    setSavedHandler(vehicle -> {
+      vehicleDAO.createVehicle(vehicle);
+      eventBus.publish(this, new EntityModifiedEvent(vehicle));
     });
     setResetHandler(p -> eventBus.publish(this, new EntityModifiedEvent(p)));
 
@@ -33,9 +34,10 @@ public class ClientForm extends EntityForm<Client> {
   protected Component createContent() {
     return new MVerticalLayout(
       new MFormLayout(
-        firstName,
-        lastName
-    ).withWidth(""),
+        brand,
+        clientID,
+        modelID
+      ).withWidth(""),
       getToolbar()
     ).withWidth("");
   }

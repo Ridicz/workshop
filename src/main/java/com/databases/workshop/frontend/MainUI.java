@@ -3,13 +3,16 @@ package com.databases.workshop.frontend;
 import com.databases.workshop.backend.client.Client;
 import com.databases.workshop.backend.mechanic.Mechanic;
 import com.databases.workshop.backend.model.BaseEntity;
-import com.databases.workshop.frontend.events.ClientModifiedEvent;
+import com.databases.workshop.backend.vehicles.Vehicle;
+import com.databases.workshop.frontend.events.EntityModifiedEvent;
 import com.databases.workshop.frontend.events.SelectedClientTableEvent;
 import com.databases.workshop.frontend.events.SelectedMechanicTableEvent;
+import com.databases.workshop.frontend.events.SelectedVehicleTableEvent;
 import com.databases.workshop.frontend.forms.EntityForm;
 import com.databases.workshop.frontend.tables.ClientTable;
 import com.databases.workshop.frontend.tables.EntityTable;
 import com.databases.workshop.frontend.tables.MechanicTable;
+import com.databases.workshop.frontend.tables.VehicleTable;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.FontAwesome;
@@ -40,6 +43,7 @@ public class MainUI extends UI {
 
   private EntityTable<Client> clientTable;
   private EntityTable<Mechanic> mechanicTable;
+  private EntityTable<Vehicle> vehicleTable;
 
   private TextField filterByName = new MTextField().withInputPrompt("Filter by name");
 
@@ -54,8 +58,8 @@ public class MainUI extends UI {
   }
 
   @Autowired
-  public void setEntityTable(ClientTable clientTable) {
-    this.entityTable = clientTable;
+  public void setEntityTable(MechanicTable vehicleTable) {
+    this.entityTable = vehicleTable;
   }
 
   @Autowired
@@ -66,6 +70,11 @@ public class MainUI extends UI {
   @Autowired
   public void setMechanicTable(MechanicTable mechanicTable) {
     this.mechanicTable = mechanicTable;
+  }
+
+  @Autowired
+  public void setVehicleTable(VehicleTable vehicleTable) {
+    this.vehicleTable = vehicleTable;
   }
 
   @Override
@@ -114,7 +123,7 @@ public class MainUI extends UI {
   }
 
   @EventBusListenerMethod(scope = EventScope.UI)
-  public void onEntityModified(ClientModifiedEvent event) {
+  public void onEntityModified(EntityModifiedEvent event) {
     listEntities();
     entityForm.closePopup();
   }
@@ -128,6 +137,12 @@ public class MainUI extends UI {
   @EventBusListenerMethod(scope = EventScope.UI)
   public void mechanicTableSet(SelectedMechanicTableEvent event) {
     entityTable = mechanicTable;
+    update();
+  }
+
+  @EventBusListenerMethod(scope = EventScope.UI)
+  public void vehicleTableSet(SelectedVehicleTableEvent event) {
+    entityTable = vehicleTable;
     update();
   }
 }
