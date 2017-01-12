@@ -33,9 +33,9 @@ public class VehicleDAOImpl implements VehicleDAO {
     String query = "SELECT * FROM VEHICLES";
 
     return template.query(query, ((rs, rowNum) ->
-      new Vehicle(Integer.valueOf(rs.getString("VehicleID")), rs.getInt("ClientID"),
-        rs.getInt("ModelID"), rs.getString("Brand"), getClientName(rs.getInt("ClientID")),
-        getModelVersion(rs.getInt("ModelID")))));
+      new Vehicle(rs.getInt("VehicleID"), rs.getInt("ClientId"), rs.getInt("ModelID"),
+        rs.getString("Brand"), getModel(rs.getInt("ModelID")),
+        getModelVersion(rs.getInt("ModelID")), getClientName(rs.getInt("ClientID")))));
   }
 
   @Override
@@ -62,7 +62,6 @@ public class VehicleDAOImpl implements VehicleDAO {
     String query = "DELETE FROM VEHICLES WHERE VehicleID=?";
 
     template.update(query, id);
-
   }
 
   @Override
@@ -75,8 +74,8 @@ public class VehicleDAOImpl implements VehicleDAO {
 
     return template.queryForObject(query, new Object[]{id}, (rs, rowNum) ->
       new Vehicle(rs.getInt("VehicleID"), rs.getInt("ClientId"), rs.getInt("ModelID"),
-        rs.getString("Brand"), getClientName(rs.getInt("ClientID")),
-        getModelVersion(rs.getInt("ModelID"))));
+        rs.getString("Brand"), getModel(rs.getInt("ModelID")),
+        getModelVersion(rs.getInt("ModelID")), getClientName(rs.getInt("ClientID"))));
   }
 
   @Override
@@ -85,8 +84,8 @@ public class VehicleDAOImpl implements VehicleDAO {
 
     return template.query(query, new Object[]{nameFilter}, (rs, rowNum) ->
       new Vehicle(rs.getInt("VehicleID"), rs.getInt("ClientID"),
-        rs.getInt("ModelID"), rs.getString("Brand"), getModel()
-        getClientName(rs.getInt("ClientID")), getModelVersion(rs.getInt("ModelID"))));
+        rs.getInt("ModelID"), rs.getString("Brand"), getModel(rs.getInt("ModelID")),
+        getModelVersion(rs.getInt("ModelID")), getClientName(rs.getInt("ClientID"))));
   }
 
   private String getClientName(Integer clientID) {

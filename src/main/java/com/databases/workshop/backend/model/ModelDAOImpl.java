@@ -21,22 +21,37 @@ public class ModelDAOImpl implements ModelDAO {
 
   @Override
   public List<Model> findAllModels() {
-    return null;
+    String query = "SELECT * FROM MODELS";
+
+    return template.query(query, (rs, rowNum) ->
+      new Model(rs.getInt("ModelID"), rs.getString("Model"), rs.getString("Version"),
+        rs.getInt("ProductionYear")));
   }
 
   @Override
   public void createModel(Model model) {
+    if (findModelByID(model.getId()) != null) {
+      updateModel(model);
+      return;
+    }
 
+    String query = "INSERT INTO MODELS (Model, Version, ProductionYear) VALUES (?, ?, ?)";
+
+    template.update(query, model.getModel(), model.getVersion(), model.getProductionYear());
   }
 
   @Override
   public void updateModel(Model newModel) {
+    String query = "UPDATE MODELS SET Model=?, Version=?, ProductionYear=? WHERE ModelID=?";
 
+    template.update(query, newModel.getModel(), newModel.getVersion(), newModel.getProductionYear(), newModel.getId());
   }
 
   @Override
   public void deleteModel(Integer id) {
+    String query = "DELETE FROM MODELS WHERE ModelID=?";
 
+    template.update(query, id);
   }
 
   @Override
