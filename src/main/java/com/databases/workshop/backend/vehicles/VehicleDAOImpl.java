@@ -2,6 +2,8 @@ package com.databases.workshop.backend.vehicles;
 
 import com.databases.workshop.backend.client.Client;
 import com.databases.workshop.backend.client.ClientDAO;
+import com.databases.workshop.backend.model.Model;
+import com.databases.workshop.backend.model.ModelDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,12 +18,14 @@ public class VehicleDAOImpl implements VehicleDAO {
   private JdbcTemplate template;
 
   private ClientDAO clientDAO;
+  private ModelDAO modelDAO;
 
   @Autowired
-  public VehicleDAOImpl(DataSource dataSource, ClientDAO clientDAO) {
+  public VehicleDAOImpl(DataSource dataSource, ClientDAO clientDAO, ModelDAO modelDAO) {
     Assert.notNull(dataSource);
     template = new JdbcTemplate(dataSource);
     this.clientDAO = clientDAO;
+    this.modelDAO = modelDAO;
   }
 
   @Override
@@ -30,7 +34,8 @@ public class VehicleDAOImpl implements VehicleDAO {
 
     return template.query(query, ((rs, rowNum) ->
       new Vehicle(Integer.valueOf(rs.getString("VehicleID")), rs.getInt("ClientID"),
-        rs.getInt("ModelID"), rs.getString("Brand"), getClientName(rs.getInt("ClientID")))));
+        rs.getInt("ModelID"), rs.getString("Brand"), getClientName(rs.getInt("ClientID")),
+        getModelVersion(rs.getInt("ModelID")))));
   }
 
   @Override
@@ -70,8 +75,8 @@ public class VehicleDAOImpl implements VehicleDAO {
 
     return template.queryForObject(query, new Object[]{id}, (rs, rowNum) ->
       new Vehicle(rs.getInt("VehicleID"), rs.getInt("ClientId"), rs.getInt("ModelID"),
-        rs.getString("Brand"), getClientName(rs.getInt("ClientID"))));
-
+        rs.getString("Brand"), getClientName(rs.getInt("ClientID")),
+        getModelVersion(rs.getInt("ModelID"))));
   }
 
   @Override
@@ -80,13 +85,22 @@ public class VehicleDAOImpl implements VehicleDAO {
 
     return template.query(query, new Object[]{nameFilter}, (rs, rowNum) ->
       new Vehicle(rs.getInt("VehicleID"), rs.getInt("ClientID"),
-        rs.getInt("ModelID"), rs.getString("Brand"),
-        getClientName(rs.getInt("ClientID"))));
+        rs.getInt("ModelID"), rs.getString("Brand"), getModel()
+        getClientName(rs.getInt("ClientID")), getModelVersion(rs.getInt("ModelID"))));
   }
 
   private String getClientName(Integer clientID) {
     Client client = clientDAO.findClientByID(clientID);
-
     return client.getFirstName() + " " + client.getLastName();
+  }
+
+  private String getModelVersion(Integer id) {
+    Model model = modelDAO.findModelByID(id);
+    return model.getVersion();
+  }
+
+  private String getModel(Integer id) {
+    Model model = modelDAO.findModelByID(id);
+    return model.getModel();
   }
 }

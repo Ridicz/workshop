@@ -41,7 +41,15 @@ public class ModelDAOImpl implements ModelDAO {
 
   @Override
   public Model findModelByID(Integer id) {
-    return null;
+    if (id == null) {
+      return null;
+    }
+
+    String query = "SELECT * FROM MODELS WHERE ModelID=?";
+
+    return template.queryForObject(query, new Object[]{id}, (rs, rowNum) ->
+      new Model(rs.getInt("ModelID"), rs.getString("Model"), rs.getString("Version"),
+        rs.getInt("ProductionYear")));
   }
 
   @Override
@@ -49,6 +57,6 @@ public class ModelDAOImpl implements ModelDAO {
     String query = "SELECT * FROM MODELS WHERE Version LIKE ?";
 
     return template.query(query, new Object[]{nameFilter}, (rs, rowNum) -> new Model(rs.getInt("ModelID"),
-      rs.getString("Version"), rs.getInt("ProductionYear")));
+      rs.getString("Model"), rs.getString("Version"), rs.getInt("ProductionYear")));
   }
 }

@@ -22,13 +22,14 @@ public class VehicleTable extends EntityTable<Vehicle> {
     this.vehicleDAO = vehicleDAO;
     this.vehicleForm = vehicleForm;
 
-    withProperties("id", "brand", "clientName");
-    withColumnHeaders("ID", "Brand", "Client name");
+    withProperties("id", "brand", "modelVersion", "clientName");
+    withColumnHeaders("ID", "Brand", "Model version", "Client name");
     setSortableProperties("Brand");
     withFullWidth();
 
     setColumnWidth("id", 50);
     setColumnWidth("brand", 200);
+    setColumnWidth("modelVersion", 300);
     setColumnWidth("clientName", 300);
     setColumnAlignment("id", Table.Align.CENTER);
   }
