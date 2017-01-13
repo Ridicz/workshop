@@ -1,7 +1,7 @@
 package com.databases.workshop.frontend.tables;
 
-import com.databases.workshop.backend.vehicles.Vehicle;
-import com.databases.workshop.backend.vehicles.VehicleDAO;
+import com.databases.workshop.backend.vehicle.Vehicle;
+import com.databases.workshop.backend.vehicle.VehicleDAO;
 import com.databases.workshop.frontend.forms.EntityForm;
 import com.databases.workshop.frontend.forms.VehicleForm;
 import com.vaadin.spring.annotation.SpringComponent;

@@ -1,4 +1,4 @@
-package com.databases.workshop.backend.vehicles;
+package com.databases.workshop.backend.vehicle;
 
 import com.databases.workshop.backend.model.BaseEntity;
 

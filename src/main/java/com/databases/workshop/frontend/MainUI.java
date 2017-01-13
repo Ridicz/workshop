@@ -4,7 +4,7 @@ import com.databases.workshop.backend.client.Client;
 import com.databases.workshop.backend.mechanic.Mechanic;
 import com.databases.workshop.backend.model.BaseEntity;
 import com.databases.workshop.backend.model.Model;
-import com.databases.workshop.backend.vehicles.Vehicle;
+import com.databases.workshop.backend.vehicle.Vehicle;
 import com.databases.workshop.frontend.events.*;
 import com.databases.workshop.frontend.forms.EntityForm;
 import com.databases.workshop.frontend.tables.*;
