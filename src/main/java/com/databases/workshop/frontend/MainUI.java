@@ -4,6 +4,8 @@ import com.databases.workshop.backend.client.Client;
 import com.databases.workshop.backend.mechanic.Mechanic;
 import com.databases.workshop.backend.model.BaseEntity;
 import com.databases.workshop.backend.model.Model;
+import com.databases.workshop.backend.part.Part;
+import com.databases.workshop.backend.repair.Repair;
 import com.databases.workshop.backend.vehicle.Vehicle;
 import com.databases.workshop.frontend.events.*;
 import com.databases.workshop.frontend.forms.EntityForm;
@@ -13,9 +15,7 @@ import com.vaadin.annotations.Title;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.EventScope;
@@ -40,6 +40,8 @@ public class MainUI extends UI {
   private EntityTable<Mechanic> mechanicTable;
   private EntityTable<Vehicle> vehicleTable;
   private EntityTable<Model> modelTable;
+  private EntityTable<Part> partTable;
+  private EntityTable<Repair> repairTable;
 
   private TextField filterByName = new MTextField().withInputPrompt("Filter by name");
 
@@ -47,6 +49,7 @@ public class MainUI extends UI {
   private Button edit = new MButton(FontAwesome.PENCIL_SQUARE_O, this::edit);
   private Button delete = new ConfirmButton(FontAwesome.TRASH_O,
     "Are you sure you want to delete entity?", this::remove);
+  private Button showRepairDetails = new MButton(FontAwesome.INFO_CIRCLE, this::showRepairDetails);
 
   @Autowired
   public MainUI(EventBus.UIEventBus eventBus) {
@@ -78,6 +81,16 @@ public class MainUI extends UI {
     this.modelTable = modelTable;
   }
 
+  @Autowired
+  public void setPartTable(PartTable partTable) {
+    this.partTable = partTable;
+  }
+
+  @Autowired
+  public void setRepairTable(RepairTable repairTable) {
+    this.repairTable = repairTable;
+  }
+
   @Override
   protected void init(VaadinRequest vaadinRequest) {
     update();
@@ -88,10 +101,12 @@ public class MainUI extends UI {
     setContent(
       new MVerticalLayout(
         new NavigationMenu(eventBus),
-        new MHorizontalLayout(filterByName, addNew, edit, delete),
+        new MHorizontalLayout(filterByName, addNew, edit, delete, showRepairDetails),
         entityTable
       ).expand(entityTable)
     );
+//    showRepairDetails.setVisible(false);
+//    showRepairDetails.setEnabled(false);
     listEntities();
 
     entityTable.addMValueChangeListener(event -> adjustActionButtonState());
@@ -123,6 +138,23 @@ public class MainUI extends UI {
     entityTable.remove();
   }
 
+  public void showRepairDetails(Button.ClickEvent clickEvent) {
+    RepairPartsWindow window = new RepairPartsWindow(partTable);
+    window.init();
+    UI.getCurrent().addWindow(window);
+
+//    final Window window = new Window("Window");
+//    window.setWidth(800f, Unit.PIXELS);
+//    window.setHeight(450f, Unit.PIXELS);
+//    final FormLayout content = new FormLayout();
+//
+//    content.addComponent(partTable);
+//    partTable.listEntities("");
+//
+//    window.setContent(content);
+//    UI.getCurrent().addWindow(window);
+  }
+
   @EventBusListenerMethod(scope = EventScope.UI)
   public void onEntityModified(EntityModifiedEvent event) {
     listEntities();
@@ -150,6 +182,18 @@ public class MainUI extends UI {
   @EventBusListenerMethod(scope = EventScope.UI)
   public void modelTableSet(SelectedModelTableEvent event) {
     entityTable = modelTable;
+    update();
+  }
+
+  @EventBusListenerMethod(scope = EventScope.UI)
+  public void partTableSet(SelectedPartTableEvent event) {
+    entityTable = partTable;
+    update();
+  }
+
+  @EventBusListenerMethod(scope = EventScope.UI)
+  public void repairTableSet(SelectedRepairTableEvent event) {
+    entityTable = repairTable;
     update();
   }
 }

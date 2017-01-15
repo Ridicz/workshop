@@ -24,7 +24,8 @@ public class ClientDAOImpl implements ClientDAO {
     String query = "SELECT * FROM CLIENTS";
 
     return template.query(query, ((rs, rowNum) ->
-      new Client(Integer.valueOf(rs.getString("ClientID")), rs.getString("FirstName"), rs.getString("LastName"))
+      new Client(Integer.valueOf(rs.getString("ClientID")), rs.getString("FirstName"),
+        rs.getString("LastName"))
     ));
   }
 

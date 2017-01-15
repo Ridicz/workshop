@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: "com.mysql.jdbc.Driver"
-    url: "jdbc:mysql://localhost:3306/workshop"
+    url: "jdbc:mysql://localhost:3306/workshop?autoReconnect=true&useSSL=false"
     username: "testowy"
     password: "qwerty"
   jpa:
