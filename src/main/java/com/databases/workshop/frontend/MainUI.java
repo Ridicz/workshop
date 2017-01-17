@@ -139,7 +139,7 @@ public class MainUI extends UI {
   }
 
   public void showRepairDetails(Button.ClickEvent clickEvent) {
-    RepairPartsWindow window = new RepairPartsWindow(partTable);
+    RepairPartsWindow window = new RepairPartsWindow();
     window.init();
     UI.getCurrent().addWindow(window);
 
